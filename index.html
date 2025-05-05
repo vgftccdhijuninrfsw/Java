@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java Jazz Festival 2025 - Ticket Purchase</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #e61e4d;
+            --secondary: #1a1a2e;
+            --accent: #ffd166;
+            --vip: #9c27b0;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #28a745;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        body {
+            background-color: var(--secondary);
+            color: var(--light);
+            background-image: url('https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(26, 26, 46, 0.85);
+            z-index: -1;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeIn 1s ease-in-out;
+        }
+        
+        .logo {
+            width: 300px;
+            margin-bottom: 1rem;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+        }
+        
+        .date-location {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .ticket-section {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.8s ease-out;
+        }
+        
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+            text-align: center;
+        }
+        
+        .ticket-options {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+        
+        .ticket-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            border-radius: 10px;
+            padding: 2rem;
+            width: 280px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .ticket-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+        }
+        
+        .ticket-card.regular:hover {
+            border-color: var(--accent);
+        }
+        
+        .ticket-card.vip:hover {
+            border-color: var(--vip);
+        }
+        
+        .ticket-card.vvip:hover {
+            border-color: var(--primary);
+        }
+        
+        .ticket-card.selected {
+            background: linear-gradient(135deg, rgba(230,30,77,0.15), rgba(230,30,77,0.1));
+        }
+        
+        .ticket-card.regular.selected {
+            border-color: var(--accent);
+        }
+        
+        .ticket-card.vip.selected {
+            border-color: var(--vip);
+        }
+        
+        .ticket-card.vvip.selected {
+            border-color: var(--primary);
+        }
+        
+        .ticket-card.selected::after {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: white;
+            background-color: var(--primary);
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        
+        .ticket-card.vip.selected::after {
+            background-color: var(--vip);
+        }
+        
+        .ticket-card.regular.selected::after {
+            background-color: var(--accent);
+        }
+        
+        .ticket-type {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .ticket-card.regular .ticket-type {
+            color: var(--accent);
+        }
+        
+        .ticket-card.vip .ticket-type {
+            color: var(--vip);
+        }
+        
+        .ticket-card.vvip .ticket-type {
+            color: var(--primary);
+        }
+        
+        .ticket-price {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+        
+        .ticket-features {
+            list-style: none;
+            margin-bottom: 1.5rem;
+        }
+        
+        .ticket-features li {
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .ticket-features i {
+            width: 20px;
+            text-align: center;
+        }
+        
+        .ticket-card.regular .ticket-features i {
+            color: var(--accent);
+        }
+        
+        .ticket-card.vip .ticket-features i {
+            color: var(--vip);
+        }
+        
+        .ticket-card.vvip .ticket-features i {
+            color: var(--primary);
+        }
+        
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .quantity-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        
+        .quantity-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .quantity-input {
+            width: 50px;
+            text-align: center;
+            margin: 0 1rem;
+            background-color: transparent;
+            border: 1px solid var(--light);
+            color: var(--light);
+            padding: 0.5rem;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--primary);
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            box-shadow: 0 5px 15px rgba(230, 30, 77, 0.4);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(230, 30, 77, 0.6);
+        }
+        
+        .btn-block {
+            display: block;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .btn-accent {
+            background-color: var(--accent);
+            color: var(--dark);
+            box-shadow: 0 5px 15px rgba(255, 209, 102, 0.4);
+        }
+        
+        .btn-accent:hover {
+            box-shadow: 0 8px 20px rgba(255, 209, 102, 0.6);
+        }
+        
+        .confirmation-section {
+            display: none;
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        .order-summary {
+            margin-bottom: 2rem;
+        }
+        
+        .order-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .order-row:last-child {
+            border-bottom: none;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--accent);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        input[type="email"] {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border-radius: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--light);
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        input[type="email"]:focus {
+            outline: none;
+            border-color: var(--accent);
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .payment-section {
+            display: none;
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        .payment-method {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+        
+        .payment-method.selected {
+            border: 2px solid var(--accent);
+            background-color: rgba(255, 209, 102, 0.1);
+        }
+        
+        .payment-icon {
+            font-size: 2rem;
+            color: var(--accent);
+        }
+        
+        .payment-details {
+            flex-grow: 1;
+        }
+        
+        .payment-info {
+            margin-top: 0.5rem;
+            padding: 0.8rem;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .payment-info-row {
+            display: flex;
+            margin-bottom: 0.3rem;
+        }
+        
+        .payment-info-label {
+            min-width: 100px;
+            font-weight: 600;
+        }
+        
+        .payment-name {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+        
+        .payment-instruction {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .modal-content {
+            background-color: var(--secondary);
+            padding: 2rem;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.4s ease-out;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--light);
+            opacity: 0.7;
+            transition: all 0.2s;
+        }
+        
+        .close-modal:hover {
+            opacity: 1;
+            transform: rotate(90deg);
+        }
+        
+        .modal-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .error-icon {
+            color: var(--primary);
+        }
+        
+        .success-icon {
+            color: var(--success);
+        }
+        
+        .modal-title {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+        
+        .modal-message {
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        
+        .modal-payment-info {
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+        
+        .modal-payment-row {
+            display: flex;
+            margin-bottom: 0.5rem;
+        }
+        
+        .modal-payment-label {
+            min-width: 120px;
+            font-weight: 600;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { 
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        
+        .shake {
+            animation: shake 0.5s;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .logo {
+                width: 250px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .ticket-options {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .date-location {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .payment-info-row, .modal-payment-row {
+                flex-direction: column;
+            }
+            
+            .payment-info-label, .modal-payment-label {
+                min-width: auto;
+                margin-bottom: 0.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img src="https://mmc.tirto.id/image/2025/02/25/java-jazz-2025_ratio-16x9.jpg" alt="Java Jazz Festival Logo" class="logo">
+            <h1>Java Jazz Festival 2025</h1>
+            <p class="subtitle">The Ultimate Jazz Experience in Indonesia</p>
+            <div class="date-location">
+                <div class="info-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>May 30 - June 2, 2025</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>JCC, Jakarta, Indonesia</span>
+                </div>
+            </div>
+        </header>
+        
+        <section class="ticket-section" id="ticketSelection">
+            <h2>Select Your Ticket</h2>
+            <div class="ticket-options">
+                <div class="ticket-card regular" data-type="regular" data-price="470000">
+                    <h3 class="ticket-type">Regular</h3>
+                    <div class="ticket-price">Rp 470,000</div>
+                    <ul class="ticket-features">
+                        <li><i class="fas fa-check"></i> Access to all stages</li>
+                        <li><i class="fas fa-check"></i> General admission</li>
+                        <li><i class="fas fa-check"></i> Food & beverage available</li>
+                        <li><i class="fas fa-check"></i> Merchandise stand access</li>
+                    </ul>
+                </div>
+                <div class="ticket-card vip" data-type="vip" data-price="850000">
+                    <h3 class="ticket-type">VIP</h3>
+                    <div class="ticket-price">Rp 850,000</div>
+                    <ul class="ticket-features">
+                        <li><i class="fas fa-check"></i> VIP lounge access</li>
+                        <li><i class="fas fa-check"></i> Premium stage view</li>
+                        <li><i class="fas fa-check"></i> Complimentary drinks</li>
+                        <li><i class="fas fa-check"></i> Fast track entry</li>
+                        <li><i class="fas fa-check"></i> Exclusive merchandise</li>
+                    </ul>
+                </div>
+                <div class="ticket-card vvip" data-type="vvip" data-price="1420000">
+                    <h3 class="ticket-type">VVIP</h3>
+                    <div class="ticket-price">Rp 1,420,000</div>
+                    <ul class="ticket-features">
+                        <li><i class="fas fa-check"></i> VVIP premium lounge</li>
+                        <li><i class="fas fa-check"></i> Best stage view</li>
+                        <li><i class="fas fa-check"></i> Premium open bar</li>
+                        <li><i class="fas fa-check"></i> Fastest entry</li>
+                        <li><i class="fas fa-check"></i> Backstage access</li>
+                        <li><i class="fas fa-check"></i> Meet & greet opportunity</li>
+                        <li><i class="fas fa-check"></i> Exclusive gift package</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="quantity-selector">
+                <button class="quantity-btn" id="decreaseQty">-</button>
+                <input type="number" class="quantity-input" id="ticketQuantity" value="1" min="1" max="10">
+                <button class="quantity-btn" id="increaseQty">+</button>
+            </div>
+            
+            <button class="btn btn-block" id="selectTicketBtn">Select Ticket</button>
+        </section>
+        
+        <section class="confirmation-section" id="confirmationSection">
+            <h2>Order Confirmation</h2>
+            <div class="order-summary">
+                <div class="order-row">
+                    <span>Ticket Type:</span>
+                    <span id="confirmTicketType">VIP</span>
+                </div>
+                <div class="order-row">
+                    <span>Quantity:</span>
+                    <span id="confirmQuantity">1</span>
+                </div>
+                <div class="order-row">
+                    <span>Price per Ticket:</span>
+                    <span id="confirmPrice">Rp 850,000</span>
+                </div>
+                <div class="order-row">
+                    <span>Total:</span>
+                    <span id="confirmTotal">Rp 850,000</span>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" placeholder="Enter your email to receive ticket information" required>
+            </div>
+            
+            <button class="btn btn-block" id="continuePaymentBtn">Continue to Payment</button>
+            <button class="btn btn-block btn-accent" id="backToSelectionBtn">Back to Ticket Selection</button>
+        </section>
+        
+        <section class="payment-section" id="paymentSection">
+            <h2>Payment Method</h2>
+            
+            <div class="payment-method selected">
+                <i class="fas fa-wallet payment-icon"></i>
+                <div class="payment-details">
+                    <div class="payment-name">DANA Payment</div>
+                    <div class="payment-instruction">Please transfer the exact amount to:</div>
+                    <div class="payment-info">
+                        <div class="payment-info-row">
+                            <div class="payment-info-label">Account Number:</div>
+                            <div>0838-1000-701</div>
+                        </div>
+                        <div class="payment-info-row">
+                            <div class="payment-info-label">Account Name:</div>
+                            <div>Rah*** Ram*** Si****</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="order-summary">
+                <div class="order-row">
+                    <span>Ticket Type:</span>
+                    <span id="paymentTicketType">VIP</span>
+                </div>
+                <div class="order-row">
+                    <span>Quantity:</span>
+                    <span id="paymentQuantity">1</span>
+                </div>
+                <div class="order-row">
+                    <span>Total Amount:</span>
+                    <span id="paymentTotal">Rp 850,000</span>
+                </div>
+            </div>
+            
+            <button class="btn btn-block" id="getTicketBtn">Get Ticket</button>
+            <button class="btn btn-block btn-accent" id="backToConfirmationBtn">Back to Confirmation</button>
+        </section>
+        
+        <footer>
+            <p>&copy; 2025 Java Jazz Festival. All rights reserved.</p>
+            <p>Need help? Contact us at support@javajazzfestival.com</p>
+        </footer>
+    </div>
+    
+    <!-- Payment Not Completed Modal -->
+    <div class="modal" id="paymentModal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <i class="fas fa-exclamation-circle modal-icon error-icon"></i>
+            <h3 class="modal-title">Payment Not Completed</h3>
+            <p class="modal-message">Your payment has not been completed yet. Please complete the payment to receive your ticket.</p>
+            
+            <div class="modal-payment-info">
+                <div class="modal-payment-row">
+                    <div class="modal-payment-label">Payment Method:</div>
+                    <div>DANA</div>
+                </div>
+                <div class="modal-payment-row">
+                    <div class="modal-payment-label">Account Number:</div>
+                    <div>0838-1000-701</div>
+                </div>
+                <div class="modal-payment-row">
+                    <div class="modal-payment-label">Account Name:</div>
+                    <div>Rah*** Ram*** Si****</div>
+                </div>
+                <div class="modal-payment-row">
+                    <div class="modal-payment-label">Amount to Pay:</div>
+                    <div id="modalPaymentAmount">Rp 850,000</div>
+                </div>
+            </div>
+            
+            <button class="btn" id="understandBtn">I Understand</button>
+        </div>
+    </div>
+    
+    <!-- Invalid Email Modal -->
+    <div class="modal" id="emailModal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <i class="fas fa-exclamation-triangle modal-icon error-icon"></i>
+            <h3 class="modal-title">Invalid Email Address</h3>
+            <p class="modal-message">Please enter a valid email address to continue. Your email is required to receive ticket information.</p>
+            <button class="btn" id="emailModalBtn">OK</button>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Ticket selection
+            const ticketCards = document.querySelectorAll('.ticket-card');
+            const selectTicketBtn = document.getElementById('selectTicketBtn');
+            const ticketQuantity = document.getElementById('ticketQuantity');
+            const decreaseQty = document.getElementById('decreaseQty');
+            const increaseQty = document.getElementById('increaseQty');
+            
+            let selectedTicket = null;
+            
+            // Select ticket card
+            ticketCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    ticketCards.forEach(c => c.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedTicket = {
+                        type: this.dataset.type,
+                        price: parseInt(this.dataset.price)
+                    };
+                });
+            });
+            
+            // Quantity adjustment
+            decreaseQty.addEventListener('click', function() {
+                let value = parseInt(ticketQuantity.value);
+                if (value > 1) {
+                    ticketQuantity.value = value - 1;
+                }
+            });
+            
+            increaseQty.addEventListener('click', function() {
+                let value = parseInt(ticketQuantity.value);
+                if (value < 10) {
+                    ticketQuantity.value = value + 1;
+                }
+            });
+            
+            // Ticket selection button
+            selectTicketBtn.addEventListener('click', function() {
+                if (!selectedTicket) {
+                    alert('Please select a ticket type first');
+                    return;
+                }
+                
+                const quantity = parseInt(ticketQuantity.value);
+                const total = selectedTicket.price * quantity;
+                
+                // Update confirmation section
+                document.getElementById('confirmTicketType').textContent = selectedTicket.type.toUpperCase();
+                document.getElementById('confirmQuantity').textContent = quantity;
+                document.getElementById('confirmPrice').textContent = formatCurrency(selectedTicket.price);
+                document.getElementById('confirmTotal').textContent = formatCurrency(total);
+                
+                // Update payment section
+                document.getElementById('paymentTicketType').textContent = selectedTicket.type.toUpperCase();
+                document.getElementById('paymentQuantity').textContent = quantity;
+                document.getElementById('paymentTotal').textContent = formatCurrency(total);
+                document.getElementById('modalPaymentAmount').textContent = formatCurrency(total);
+                
+                // Show confirmation section
+                document.getElementById('ticketSelection').style.display = 'none';
+                document.getElementById('confirmationSection').style.display = 'block';
+            });
+            
+            // Back to selection
+            document.getElementById('backToSelectionBtn').addEventListener('click', function() {
+                document.getElementById('confirmationSection').style.display = 'none';
+                document.getElementById('ticketSelection').style.display = 'block';
+            });
+            
+            // Continue to payment
+            document.getElementById('continuePaymentBtn').addEventListener('click', function() {
+                const email = document.getElementById('email').value;
+                const emailInput = document.getElementById('email');
+                
+                if (!email || !validateEmail(email)) {
+                    // Show error modal
+                    document.getElementById('emailModal').style.display = 'flex';
+                    // Add shake animation to input
+                    emailInput.classList.add('shake');
+                    setTimeout(() => {
+                        emailInput.classList.remove('shake');
+                    }, 500);
+                    return;
+                }
+                
+                document.getElementById('confirmationSection').style.display = 'none';
+                document.getElementById('paymentSection').style.display = 'block';
+            });
+            
+            // Back to confirmation
+            document.getElementById('backToConfirmationBtn').addEventListener('click', function() {
+                document.getElementById('paymentSection').style.display = 'none';
+                document.getElementById('confirmationSection').style.display = 'block';
+            });
+            
+            // Get ticket button
+            document.getElementById('getTicketBtn').addEventListener('click', function() {
+                document.getElementById('paymentModal').style.display = 'flex';
+            });
+            
+            // Close modals
+            document.querySelectorAll('.close-modal').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.modal').forEach(modal => {
+                        modal.style.display = 'none';
+                    });
+                });
+            });
+            
+            document.getElementById('understandBtn').addEventListener('click', function() {
+                document.getElementById('paymentModal').style.display = 'none';
+            });
+            
+            document.getElementById('emailModalBtn').addEventListener('click', function() {
+                document.getElementById('emailModal').style.display = 'none';
+            });
+            
+            // Helper function to format currency
+            function formatCurrency(amount) {
+                return 'Rp ' + amount.toLocaleString('id-ID');
+            }
+            
+            // Helper function to validate email
+            function validateEmail(email) {
+                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return re.test(email);
+            }
+        });
+    </script>
+</body>
+</html>
