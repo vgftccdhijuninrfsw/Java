@@ -1,910 +1,759 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Java Jazz Festival 2025 - Ticket Purchase</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>TON Transfer Pro | Kirim TON dengan Mudah</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/@tonconnect/sdk@latest/dist/tonconnect-sdk.min.js"></script>
     <style>
         :root {
-            --primary: #e61e4d;
-            --secondary: #1a1a2e;
-            --accent: #ffd166;
-            --vip: #9c27b0;
-            --light: #f8f9fa;
-            --dark: #212529;
-            --success: #28a745;
+            --primary: #0098ff;
+            --primary-dark: #0077cc;
+            --secondary: #00c2a2;
+            --dark: #0d1936;
+            --darker: #070e1f;
+            --light: #f0f8ff;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --card-bg: rgba(13, 25, 54, 0.85);
+            --border-radius: 16px;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            --transition: all 0.3s ease;
         }
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Montserrat', sans-serif;
+            font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
         }
-        
+
         body {
-            background-color: var(--secondary);
-            color: var(--light);
-            background-image: url('https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            position: relative;
-        }
-        
-        body::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(26, 26, 46, 0.85);
-            z-index: -1;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-        
-        header {
-            text-align: center;
-            margin-bottom: 3rem;
-            animation: fadeIn 1s ease-in-out;
-        }
-        
-        .logo {
-            width: 300px;
-            margin-bottom: 1rem;
-        }
-        
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-            color: var(--accent);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-        
-        .subtitle {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            margin-bottom: 1.5rem;
-        }
-        
-        .date-location {
+            background: linear-gradient(135deg, var(--darker), #0a1530);
+            min-height: 100vh;
             display: flex;
             justify-content: center;
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-        
-        .info-item {
-            display: flex;
             align-items: center;
-            gap: 0.5rem;
+            padding: 20px;
+            color: var(--light);
+            line-height: 1.6;
         }
-        
-        .ticket-section {
-            background-color: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            animation: slideUp 0.8s ease-out;
-        }
-        
-        h2 {
-            font-size: 1.8rem;
-            margin-bottom: 1.5rem;
-            color: var(--accent);
-            text-align: center;
-        }
-        
-        .ticket-options {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            flex-wrap: wrap;
-            margin-bottom: 2rem;
-        }
-        
-        .ticket-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
-            border-radius: 10px;
-            padding: 2rem;
-            width: 280px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
+
+        .container {
+            width: 100%;
+            max-width: 520px;
+            background: rgba(5, 15, 35, 0.7);
+            border-radius: var(--border-radius);
+            padding: 40px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             position: relative;
             overflow: hidden;
         }
-        
-        .ticket-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
-        }
-        
-        .ticket-card.regular:hover {
-            border-color: var(--accent);
-        }
-        
-        .ticket-card.vip:hover {
-            border-color: var(--vip);
-        }
-        
-        .ticket-card.vvip:hover {
-            border-color: var(--primary);
-        }
-        
-        .ticket-card.selected {
-            background: linear-gradient(135deg, rgba(230,30,77,0.15), rgba(230,30,77,0.1));
-        }
-        
-        .ticket-card.regular.selected {
-            border-color: var(--accent);
-        }
-        
-        .ticket-card.vip.selected {
-            border-color: var(--vip);
-        }
-        
-        .ticket-card.vvip.selected {
-            border-color: var(--primary);
-        }
-        
-        .ticket-card.selected::after {
-            content: '\f00c';
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
+
+        .container::before {
+            content: '';
             position: absolute;
-            top: 10px;
-            right: 10px;
-            color: white;
-            background-color: var(--primary);
-            width: 25px;
-            height: 25px;
+            top: -100px;
+            right: -100px;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(0, 152, 255, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: -1;
+        }
+
+        .container::after {
+            content: '';
+            position: absolute;
+            bottom: -150px;
+            left: -100px;
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(0, 194, 162, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: -1;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 32px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .logo {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .logo-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
-        }
-        
-        .ticket-card.vip.selected::after {
-            background-color: var(--vip);
-        }
-        
-        .ticket-card.regular.selected::after {
-            background-color: var(--accent);
-        }
-        
-        .ticket-type {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-        }
-        
-        .ticket-card.regular .ticket-type {
-            color: var(--accent);
-        }
-        
-        .ticket-card.vip .ticket-type {
-            color: var(--vip);
-        }
-        
-        .ticket-card.vvip .ticket-type {
-            color: var(--primary);
-        }
-        
-        .ticket-price {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-        }
-        
-        .ticket-features {
-            list-style: none;
-            margin-bottom: 1.5rem;
-        }
-        
-        .ticket-features li {
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .ticket-features i {
-            width: 20px;
-            text-align: center;
-        }
-        
-        .ticket-card.regular .ticket-features i {
-            color: var(--accent);
-        }
-        
-        .ticket-card.vip .ticket-features i {
-            color: var(--vip);
-        }
-        
-        .ticket-card.vvip .ticket-features i {
-            color: var(--primary);
-        }
-        
-        .quantity-selector {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1.5rem;
-        }
-        
-        .quantity-btn {
-            background-color: var(--primary);
+            font-size: 32px;
             color: white;
-            border: none;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            font-size: 1rem;
-            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 152, 255, 0.4);
+        }
+
+        header h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+
+        header p {
+            color: #a0b3d6;
+            font-size: 17px;
+            max-width: 90%;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 28px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            z-index: 2;
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-title {
             display: flex;
             align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-        }
-        
-        .quantity-btn:hover {
-            transform: scale(1.1);
-        }
-        
-        .quantity-input {
-            width: 50px;
-            text-align: center;
-            margin: 0 1rem;
-            background-color: transparent;
-            border: 1px solid var(--light);
-            color: var(--light);
-            padding: 0.5rem;
-            border-radius: 5px;
-            font-size: 1rem;
-        }
-        
-        .btn {
-            display: inline-block;
-            background-color: var(--primary);
-            color: white;
-            padding: 0.8rem 2rem;
-            border-radius: 50px;
-            text-decoration: none;
+            margin-bottom: 24px;
+            color: var(--primary);
+            font-size: 20px;
             font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s;
-            border: none;
-            cursor: pointer;
-            font-size: 1rem;
-            box-shadow: 0 5px 15px rgba(230, 30, 77, 0.4);
         }
-        
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(230, 30, 77, 0.6);
+
+        .card-title i {
+            margin-right: 12px;
+            font-size: 24px;
+            background: rgba(0, 152, 255, 0.15);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        
-        .btn-block {
-            display: block;
-            width: 100%;
-            text-align: center;
-        }
-        
-        .btn-accent {
-            background-color: var(--accent);
-            color: var(--dark);
-            box-shadow: 0 5px 15px rgba(255, 209, 102, 0.4);
-        }
-        
-        .btn-accent:hover {
-            box-shadow: 0 8px 20px rgba(255, 209, 102, 0.6);
-        }
-        
-        .confirmation-section {
-            display: none;
-            background-color: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            animation: fadeIn 0.5s ease-out;
-        }
-        
-        .order-summary {
-            margin-bottom: 2rem;
-        }
-        
-        .order-row {
+
+        .wallet-info {
             display: flex;
             justify-content: space-between;
-            padding: 1rem 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            align-items: center;
+            padding: 16px;
+            background: rgba(0, 30, 70, 0.5);
+            border-radius: 12px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(0, 152, 255, 0.2);
         }
-        
-        .order-row:last-child {
-            border-bottom: none;
-            font-weight: 700;
-            font-size: 1.2rem;
-            color: var(--accent);
+
+        .wallet-details {
+            flex: 1;
         }
-        
-        .form-group {
-            margin-bottom: 1.5rem;
+
+        .wallet-name {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 4px;
+            font-size: 17px;
         }
-        
+
+        .wallet-address {
+            font-family: 'Courier New', monospace;
+            font-size: 15px;
+            color: #b0c8e8;
+            word-break: break-all;
+        }
+
+        .disconnect-btn {
+            background: rgba(231, 76, 60, 0.15);
+            color: var(--danger);
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .disconnect-btn:hover {
+            background: rgba(231, 76, 60, 0.25);
+        }
+
+        .input-group {
+            margin-bottom: 24px;
+            position: relative;
+        }
+
         label {
             display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
+            margin-bottom: 10px;
+            color: #a0b3d6;
+            font-size: 16px;
+            font-weight: 500;
         }
-        
-        input[type="email"] {
+
+        .input-container {
+            position: relative;
+        }
+
+        input {
             width: 100%;
-            padding: 0.8rem 1rem;
-            border-radius: 5px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            background-color: rgba(255, 255, 255, 0.1);
-            color: var(--light);
-            font-size: 1rem;
-            transition: all 0.3s;
-        }
-        
-        input[type="email"]:focus {
+            padding: 16px 20px 16px 50px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 15, 40, 0.7);
+            color: white;
+            font-size: 17px;
             outline: none;
-            border-color: var(--accent);
-            background-color: rgba(255, 255, 255, 0.2);
+            transition: var(--transition);
         }
-        
-        .payment-section {
-            display: none;
-            background-color: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            animation: fadeIn 0.5s ease-out;
+
+        input:focus {
+            border: 1px solid var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 152, 255, 0.2);
         }
-        
-        .payment-method {
+
+        .input-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+            font-size: 20px;
+        }
+
+        .input-hint {
+            font-size: 14px;
+            color: #7d94c0;
+            margin-top: 8px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border-radius: 12px;
+            border: none;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-connect {
+            background: linear-gradient(to right, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 152, 255, 0.4);
+        }
+
+        .btn-connect:hover {
+            background: linear-gradient(to right, var(--primary-dark), #0066b3);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 152, 255, 0.5);
+        }
+
+        .btn-send {
+            background: linear-gradient(to right, var(--secondary), #00a88f);
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 194, 162, 0.4);
+        }
+
+        .btn-send:hover {
+            background: linear-gradient(to right, #00a88f, #008e78);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 194, 162, 0.5);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        .btn:disabled {
+            background: #2d3a5e;
+            color: #5a6a8f;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .destination {
+            background: rgba(0, 30, 70, 0.5);
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 15px;
+            border: 1px solid rgba(0, 152, 255, 0.2);
+            margin: 24px 0;
             display: flex;
             align-items: center;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-            padding: 1rem;
-            border-radius: 10px;
-            background-color: rgba(255, 255, 255, 0.1);
-            transition: all 0.3s;
+            gap: 12px;
         }
-        
-        .payment-method.selected {
-            border: 2px solid var(--accent);
-            background-color: rgba(255, 209, 102, 0.1);
+
+        .destination i {
+            color: var(--secondary);
+            font-size: 20px;
         }
-        
-        .payment-icon {
-            font-size: 2rem;
-            color: var(--accent);
+
+        .destination strong {
+            color: var(--primary);
+            font-weight: 600;
         }
-        
-        .payment-details {
-            flex-grow: 1;
-        }
-        
-        .payment-info {
-            margin-top: 0.5rem;
-            padding: 0.8rem;
-            background-color: rgba(0, 0, 0, 0.2);
-            border-radius: 8px;
-            font-size: 0.9rem;
-        }
-        
-        .payment-info-row {
+
+        .status {
+            text-align: center;
+            padding: 18px;
+            border-radius: 12px;
+            margin-top: 20px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.05);
             display: flex;
-            margin-bottom: 0.3rem;
-        }
-        
-        .payment-info-label {
-            min-width: 100px;
-            font-weight: 600;
-        }
-        
-        .payment-name {
-            font-weight: 600;
-            margin-bottom: 0.3rem;
-        }
-        
-        .payment-instruction {
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-        
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            z-index: 1000;
             align-items: center;
             justify-content: center;
-            animation: fadeIn 0.3s ease-out;
+            gap: 10px;
         }
-        
-        .modal-content {
-            background-color: var(--secondary);
-            padding: 2rem;
-            border-radius: 15px;
-            max-width: 500px;
-            width: 90%;
-            text-align: center;
-            position: relative;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            animation: slideUp 0.4s ease-out;
-        }
-        
-        .close-modal {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--light);
-            opacity: 0.7;
-            transition: all 0.2s;
-        }
-        
-        .close-modal:hover {
-            opacity: 1;
-            transform: rotate(90deg);
-        }
-        
-        .modal-icon {
-            font-size: 4rem;
-            margin-bottom: 1.5rem;
-            animation: pulse 1.5s infinite;
-        }
-        
-        .error-icon {
-            color: var(--primary);
-        }
-        
-        .success-icon {
+
+        .status.success {
+            background: rgba(46, 204, 113, 0.15);
             color: var(--success);
+            border: 1px solid rgba(46, 204, 113, 0.3);
         }
-        
-        .modal-title {
-            font-size: 1.8rem;
-            margin-bottom: 1rem;
-            color: var(--accent);
+
+        .status.error {
+            background: rgba(231, 76, 60, 0.15);
+            color: var(--danger);
+            border: 1px solid rgba(231, 76, 60, 0.3);
         }
-        
-        .modal-message {
-            margin-bottom: 2rem;
-            line-height: 1.6;
+
+        .status.pending {
+            background: rgba(243, 156, 18, 0.15);
+            color: var(--warning);
+            border: 1px solid rgba(243, 156, 18, 0.3);
         }
-        
-        .modal-payment-info {
-            background-color: rgba(0, 0, 0, 0.2);
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 1.5rem;
-            text-align: left;
-        }
-        
-        .modal-payment-row {
+
+        .security-badge {
             display: flex;
-            margin-bottom: 0.5rem;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 12px;
+            background: rgba(46, 204, 113, 0.1);
+            border-radius: 8px;
+            color: var(--success);
+            font-size: 14px;
+            margin-top: 20px;
+            border: 1px solid rgba(46, 204, 113, 0.2);
         }
-        
-        .modal-payment-label {
-            min-width: 120px;
-            font-weight: 600;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        @keyframes slideUp {
-            from { 
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to { 
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-        
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-            20%, 40%, 60%, 80% { transform: translateX(5px); }
-        }
-        
-        .shake {
-            animation: shake 0.5s;
-        }
-        
-        footer {
+
+        .footer {
             text-align: center;
-            padding: 2rem 0;
-            opacity: 0.7;
-            font-size: 0.9rem;
+            color: #7d94c0;
+            font-size: 14px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
         }
-        
-        @media (max-width: 768px) {
+
+        @media (max-width: 600px) {
             .container {
-                padding: 1rem;
+                padding: 25px;
             }
             
-            .logo {
-                width: 250px;
+            header h1 {
+                font-size: 26px;
             }
             
-            h1 {
-                font-size: 2rem;
+            .card {
+                padding: 22px;
             }
             
-            .ticket-options {
-                flex-direction: column;
-                align-items: center;
+            .btn {
+                padding: 16px;
+                font-size: 16px;
             }
-            
-            .date-location {
-                flex-direction: column;
-                gap: 1rem;
-            }
-            
-            .payment-info-row, .modal-payment-row {
-                flex-direction: column;
-            }
-            
-            .payment-info-label, .modal-payment-label {
-                min-width: auto;
-                margin-bottom: 0.2rem;
-            }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 152, 255, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(0, 152, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 152, 255, 0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <img src="https://mmc.tirto.id/image/2025/02/25/java-jazz-2025_ratio-16x9.jpg" alt="Java Jazz Festival Logo" class="logo">
-            <h1>Java Jazz Festival 2025</h1>
-            <p class="subtitle">The Ultimate Jazz Experience in Indonesia</p>
-            <div class="date-location">
-                <div class="info-item">
-                    <i class="fas fa-calendar-alt"></i>
-                    <span>May 30 - June 2, 2025</span>
-                </div>
-                <div class="info-item">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <span>JCC, Jakarta, Indonesia</span>
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fab fa-telegram"></i>
                 </div>
             </div>
+            <h1>TON Transfer Pro</h1>
+            <p>Kirim TON dengan aman dan mudah menggunakan wallet TON terpopuler</p>
         </header>
         
-        <section class="ticket-section" id="ticketSelection">
-            <h2>Select Your Ticket</h2>
-            <div class="ticket-options">
-                <div class="ticket-card regular" data-type="regular" data-price="470000">
-                    <h3 class="ticket-type">Regular</h3>
-                    <div class="ticket-price">Rp 470,000</div>
-                    <ul class="ticket-features">
-                        <li><i class="fas fa-check"></i> Access to all stages</li>
-                        <li><i class="fas fa-check"></i> General admission</li>
-                        <li><i class="fas fa-check"></i> Food & beverage available</li>
-                        <li><i class="fas fa-check"></i> Merchandise stand access</li>
-                    </ul>
-                </div>
-                <div class="ticket-card vip" data-type="vip" data-price="850000">
-                    <h3 class="ticket-type">VIP</h3>
-                    <div class="ticket-price">Rp 850,000</div>
-                    <ul class="ticket-features">
-                        <li><i class="fas fa-check"></i> VIP lounge access</li>
-                        <li><i class="fas fa-check"></i> Premium stage view</li>
-                        <li><i class="fas fa-check"></i> Complimentary drinks</li>
-                        <li><i class="fas fa-check"></i> Fast track entry</li>
-                        <li><i class="fas fa-check"></i> Exclusive merchandise</li>
-                    </ul>
-                </div>
-                <div class="ticket-card vvip" data-type="vvip" data-price="1420000">
-                    <h3 class="ticket-type">VVIP</h3>
-                    <div class="ticket-price">Rp 1,420,000</div>
-                    <ul class="ticket-features">
-                        <li><i class="fas fa-check"></i> VVIP premium lounge</li>
-                        <li><i class="fas fa-check"></i> Best stage view</li>
-                        <li><i class="fas fa-check"></i> Premium open bar</li>
-                        <li><i class="fas fa-check"></i> Fastest entry</li>
-                        <li><i class="fas fa-check"></i> Backstage access</li>
-                        <li><i class="fas fa-check"></i> Meet & greet opportunity</li>
-                        <li><i class="fas fa-check"></i> Exclusive gift package</li>
-                    </ul>
-                </div>
+        <div class="card fade-in">
+            <div class="card-title">
+                <i class="fas fa-wallet"></i>
+                <h2>Koneksi Wallet</h2>
             </div>
             
-            <div class="quantity-selector">
-                <button class="quantity-btn" id="decreaseQty">-</button>
-                <input type="number" class="quantity-input" id="ticketQuantity" value="1" min="1" max="10">
-                <button class="quantity-btn" id="increaseQty">+</button>
+            <div id="walletStatus" class="status">
+                <i class="fas fa-info-circle"></i>
+                <span>Hubungkan wallet Anda untuk memulai</span>
             </div>
             
-            <button class="btn btn-block" id="selectTicketBtn">Select Ticket</button>
-        </section>
+            <button id="connectButton" class="btn btn-connect pulse">
+                <i class="fas fa-plug"></i> Connect Wallet
+            </button>
+            
+            <div id="walletInfo" class="wallet-info" style="display: none;">
+                <div class="wallet-details">
+                    <div class="wallet-name" id="walletName"></div>
+                    <div class="wallet-address" id="walletAddress"></div>
+                </div>
+                <button id="disconnectButton" class="disconnect-btn">
+                    <i class="fas fa-times"></i> Putuskan
+                </button>
+            </div>
+        </div>
         
-        <section class="confirmation-section" id="confirmationSection">
-            <h2>Order Confirmation</h2>
-            <div class="order-summary">
-                <div class="order-row">
-                    <span>Ticket Type:</span>
-                    <span id="confirmTicketType">VIP</span>
+        <div class="card fade-in">
+            <div class="card-title">
+                <i class="fas fa-paper-plane"></i>
+                <h2>Kirim TON</h2>
+            </div>
+            
+            <div class="input-group">
+                <label for="amount">Jumlah TON:</label>
+                <div class="input-container">
+                    <i class="fas fa-coins input-icon"></i>
+                    <input type="number" id="amount" placeholder="0.00" step="0.01" min="0.01" disabled>
                 </div>
-                <div class="order-row">
-                    <span>Quantity:</span>
-                    <span id="confirmQuantity">1</span>
-                </div>
-                <div class="order-row">
-                    <span>Price per Ticket:</span>
-                    <span id="confirmPrice">Rp 850,000</span>
-                </div>
-                <div class="order-row">
-                    <span>Total:</span>
-                    <span id="confirmTotal">Rp 850,000</span>
+                <div class="input-hint">Minimal pengiriman: 0.01 TON</div>
+            </div>
+            
+            <div class="destination">
+                <i class="fas fa-map-marker-alt"></i>
+                <div>
+                    <strong>Alamat Tujuan:</strong> 
+                    <span id="destinationAddress">UQDu_6_qWUjq3fabFLuT_T7mEwY8uytcQWB-Umv2KtB2Nz-N</span>
                 </div>
             </div>
             
-            <div class="form-group">
-                <label for="email">Email Address</label>
-                <input type="email" id="email" placeholder="Enter your email to receive ticket information" required>
+            <button id="sendButton" class="btn btn-send" disabled>
+                <i class="fas fa-paper-plane"></i> Kirim TON Sekarang
+            </button>
+            
+            <div id="transactionStatus" class="status">
+                <i class="fas fa-sync-alt"></i>
+                <span>Status transaksi akan muncul di sini</span>
             </div>
             
-            <button class="btn btn-block" id="continuePaymentBtn">Continue to Payment</button>
-            <button class="btn btn-block btn-accent" id="backToSelectionBtn">Back to Ticket Selection</button>
-        </section>
+            <div class="security-badge">
+                <i class="fas fa-shield-alt"></i>
+                <span>Transaksi 100% aman dan terenkripsi</span>
+            </div>
+        </div>
         
-        <section class="payment-section" id="paymentSection">
-            <h2>Payment Method</h2>
-            
-            <div class="payment-method selected">
-                <i class="fas fa-wallet payment-icon"></i>
-                <div class="payment-details">
-                    <div class="payment-name">DANA Payment</div>
-                    <div class="payment-instruction">Please transfer the exact amount to:</div>
-                    <div class="payment-info">
-                        <div class="payment-info-row">
-                            <div class="payment-info-label">Account Number:</div>
-                            <div>0838-1000-701</div>
-                        </div>
-                        <div class="payment-info-row">
-                            <div class="payment-info-label">Account Name:</div>
-                            <div>Rah*** Ram*** Si****</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="order-summary">
-                <div class="order-row">
-                    <span>Ticket Type:</span>
-                    <span id="paymentTicketType">VIP</span>
-                </div>
-                <div class="order-row">
-                    <span>Quantity:</span>
-                    <span id="paymentQuantity">1</span>
-                </div>
-                <div class="order-row">
-                    <span>Total Amount:</span>
-                    <span id="paymentTotal">Rp 850,000</span>
-                </div>
-            </div>
-            
-            <button class="btn btn-block" id="getTicketBtn">Get Ticket</button>
-            <button class="btn btn-block btn-accent" id="backToConfirmationBtn">Back to Confirmation</button>
-        </section>
-        
-        <footer>
-            <p>&copy; 2025 Java Jazz Festival. All rights reserved.</p>
-            <p>Need help? Contact us at support@javajazzfestival.com</p>
-        </footer>
-    </div>
-    
-    <!-- Payment Not Completed Modal -->
-    <div class="modal" id="paymentModal">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <i class="fas fa-exclamation-circle modal-icon error-icon"></i>
-            <h3 class="modal-title">Payment Not Completed</h3>
-            <p class="modal-message">Your payment has not been completed yet. Please complete the payment to receive your ticket.</p>
-            
-            <div class="modal-payment-info">
-                <div class="modal-payment-row">
-                    <div class="modal-payment-label">Payment Method:</div>
-                    <div>DANA</div>
-                </div>
-                <div class="modal-payment-row">
-                    <div class="modal-payment-label">Account Number:</div>
-                    <div>0838-1000-701</div>
-                </div>
-                <div class="modal-payment-row">
-                    <div class="modal-payment-label">Account Name:</div>
-                    <div>Rah*** Ram*** Si****</div>
-                </div>
-                <div class="modal-payment-row">
-                    <div class="modal-payment-label">Amount to Pay:</div>
-                    <div id="modalPaymentAmount">Rp 850,000</div>
-                </div>
-            </div>
-            
-            <button class="btn" id="understandBtn">I Understand</button>
+        <div class="footer">
+            <p>TON Transfer Pro &copy; 2023 | Didukung oleh TON Blockchain</p>
         </div>
     </div>
-    
-    <!-- Invalid Email Modal -->
-    <div class="modal" id="emailModal">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <i class="fas fa-exclamation-triangle modal-icon error-icon"></i>
-            <h3 class="modal-title">Invalid Email Address</h3>
-            <p class="modal-message">Please enter a valid email address to continue. Your email is required to receive ticket information.</p>
-            <button class="btn" id="emailModalBtn">OK</button>
-        </div>
-    </div>
-    
+
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Ticket selection
-            const ticketCards = document.querySelectorAll('.ticket-card');
-            const selectTicketBtn = document.getElementById('selectTicketBtn');
-            const ticketQuantity = document.getElementById('ticketQuantity');
-            const decreaseQty = document.getElementById('decreaseQty');
-            const increaseQty = document.getElementById('increaseQty');
-            
-            let selectedTicket = null;
-            
-            // Select ticket card
-            ticketCards.forEach(card => {
-                card.addEventListener('click', function() {
-                    ticketCards.forEach(c => c.classList.remove('selected'));
-                    this.classList.add('selected');
-                    selectedTicket = {
-                        type: this.dataset.type,
-                        price: parseInt(this.dataset.price)
-                    };
+        // =============================================
+        // KONFIGURASI AWAL
+        // =============================================
+        
+        // URL manifest untuk TON Connect - bisa diganti sesuai kebutuhan
+        const MANIFEST_URL = 'https://raw.githubusercontent.com/ton-connect/examples/main/tonconnect-manifest.json';
+        
+        // Alamat tujuan untuk pengiriman TON (dalam bentuk raw)
+        const DESTINATION_ADDRESS = 'UQDu_6_qWUjq3fabFLuT_T7mEwY8uytcQWB-Umv2KtB2Nz-N';
+        
+        // Inisialisasi variabel global
+        let connector = null;
+        let wallet = null;
+        
+        // Elemen DOM
+        const connectButton = document.getElementById('connectButton');
+        const disconnectButton = document.getElementById('disconnectButton');
+        const sendButton = document.getElementById('sendButton');
+        const amountInput = document.getElementById('amount');
+        const walletInfo = document.getElementById('walletInfo');
+        const walletStatus = document.getElementById('walletStatus');
+        const walletName = document.getElementById('walletName');
+        const walletAddress = document.getElementById('walletAddress');
+        const transactionStatus = document.getElementById('transactionStatus');
+        
+        // =============================================
+        // FUNGSI INISIALISASI
+        // =============================================
+        
+        // Fungsi untuk menginisialisasi TON Connect
+        function initTonConnect() {
+            try {
+                // Membuat instance connector dengan manifest URL
+                connector = new TonConnectSDK.TonConnect({ manifestUrl: MANIFEST_URL });
+                
+                // Cek apakah sudah ada koneksi wallet sebelumnya
+                connector.restoreConnection().then(() => {
+                    if (connector.wallet) {
+                        wallet = connector.wallet;
+                        updateWalletUI();
+                    }
                 });
-            });
+                
+                // Event listener untuk perubahan koneksi wallet
+                connector.onStatusChange(wallet => {
+                    if (wallet) {
+                        // Wallet terhubung
+                        window.wallet = wallet;
+                        updateWalletUI();
+                    } else {
+                        // Wallet terputus
+                        window.wallet = null;
+                        resetWalletUI();
+                    }
+                });
+                
+                console.log('TON Connect SDK diinisialisasi');
+            } catch (error) {
+                console.error('Gagal menginisialisasi TON Connect:', error);
+                setWalletStatus('Error: Gagal menginisialisasi SDK', 'error');
+            }
+        }
+        
+        // =============================================
+        // FUNGSI UI
+        // =============================================
+        
+        // Memperbarui UI setelah wallet terhubung
+        function updateWalletUI() {
+            setWalletStatus('Wallet berhasil terhubung!', 'success');
             
-            // Quantity adjustment
-            decreaseQty.addEventListener('click', function() {
-                let value = parseInt(ticketQuantity.value);
-                if (value > 1) {
-                    ticketQuantity.value = value - 1;
-                }
-            });
+            connectButton.innerHTML = '<i class="fas fa-sync-alt"></i> Hubungkan Ulang';
+            connectButton.classList.remove('pulse');
             
-            increaseQty.addEventListener('click', function() {
-                let value = parseInt(ticketQuantity.value);
-                if (value < 10) {
-                    ticketQuantity.value = value + 1;
-                }
-            });
+            walletName.textContent = wallet.device.appName;
+            walletAddress.textContent = wallet.account.address;
+            walletInfo.style.display = 'flex';
             
-            // Ticket selection button
-            selectTicketBtn.addEventListener('click', function() {
-                if (!selectedTicket) {
-                    alert('Please select a ticket type first');
+            sendButton.disabled = false;
+            amountInput.disabled = false;
+            
+            // Animasi untuk elemen yang muncul
+            walletInfo.classList.add('fade-in');
+        }
+        
+        // Mereset UI setelah wallet terputus
+        function resetWalletUI() {
+            setWalletStatus('Hubungkan wallet Anda untuk memulai');
+            
+            connectButton.innerHTML = '<i class="fas fa-plug"></i> Connect Wallet';
+            connectButton.classList.add('pulse');
+            
+            walletInfo.style.display = 'none';
+            
+            sendButton.disabled = true;
+            amountInput.disabled = true;
+            amountInput.value = '';
+            
+            setTransactionStatus('Status transaksi akan muncul di sini');
+        }
+        
+        // Menampilkan status wallet
+        function setWalletStatus(message, type = '') {
+            walletStatus.innerHTML = type === 'success' ? 
+                `<i class="fas fa-check-circle"></i> ${message}` :
+                type === 'error' ? 
+                `<i class="fas fa-exclamation-circle"></i> ${message}` :
+                `<i class="fas fa-info-circle"></i> ${message}`;
+                
+            walletStatus.className = `status ${type}`;
+        }
+        
+        // Menampilkan status transaksi
+        function setTransactionStatus(message, type = '') {
+            transactionStatus.innerHTML = type === 'success' ? 
+                `<i class="fas fa-check-circle"></i> ${message}` :
+                type === 'error' ? 
+                `<i class="fas fa-exclamation-circle"></i> ${message}` :
+                type === 'pending' ? 
+                `<i class="fas fa-sync-alt fa-spin"></i> ${message}` :
+                `<i class="fas fa-sync-alt"></i> ${message}`;
+                
+            transactionStatus.className = `status ${type}`;
+        }
+        
+        // Memendekkan alamat untuk tampilan
+        function shortenAddress(address, start = 6, end = 4) {
+            if (!address) return '';
+            return `${address.slice(0, start)}...${address.slice(-end)}`;
+        }
+        
+        // Format jumlah TON
+        function formatTON(amount) {
+            return parseFloat(amount).toLocaleString('id-ID', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }) + ' TON';
+        }
+        
+        // =============================================
+        // FUNGSI UTAMA
+        // =============================================
+        
+        // Menghubungkan wallet
+        async function connectWallet() {
+            try {
+                if (connector.connected) {
+                    // Jika sudah terhubung, putuskan koneksi
+                    await connector.disconnect();
+                    resetWalletUI();
                     return;
                 }
                 
-                const quantity = parseInt(ticketQuantity.value);
-                const total = selectedTicket.price * quantity;
+                setWalletStatus('Membuka pemilihan wallet...', 'pending');
                 
-                // Update confirmation section
-                document.getElementById('confirmTicketType').textContent = selectedTicket.type.toUpperCase();
-                document.getElementById('confirmQuantity').textContent = quantity;
-                document.getElementById('confirmPrice').textContent = formatCurrency(selectedTicket.price);
-                document.getElementById('confirmTotal').textContent = formatCurrency(total);
+                // Membuka modal pemilihan wallet
+                const connectionSource = await connector.connect();
+                console.log('Sumber koneksi:', connectionSource);
                 
-                // Update payment section
-                document.getElementById('paymentTicketType').textContent = selectedTicket.type.toUpperCase();
-                document.getElementById('paymentQuantity').textContent = quantity;
-                document.getElementById('paymentTotal').textContent = formatCurrency(total);
-                document.getElementById('modalPaymentAmount').textContent = formatCurrency(total);
-                
-                // Show confirmation section
-                document.getElementById('ticketSelection').style.display = 'none';
-                document.getElementById('confirmationSection').style.display = 'block';
-            });
+            } catch (error) {
+                console.error('Kesalahan koneksi wallet:', error);
+                setWalletStatus('Error: ' + (error.message || 'Gagal menghubungkan'), 'error');
+            }
+        }
+        
+        // Memutuskan koneksi wallet
+        async function disconnectWallet() {
+            try {
+                setWalletStatus('Memutuskan koneksi...', 'pending');
+                await connector.disconnect();
+                resetWalletUI();
+            } catch (error) {
+                console.error('Gagal memutuskan koneksi:', error);
+                setWalletStatus('Error: Gagal memutuskan koneksi', 'error');
+            }
+        }
+        
+        // Mengirim transaksi
+        async function sendTransaction() {
+            const amount = parseFloat(amountInput.value);
             
-            // Back to selection
-            document.getElementById('backToSelectionBtn').addEventListener('click', function() {
-                document.getElementById('confirmationSection').style.display = 'none';
-                document.getElementById('ticketSelection').style.display = 'block';
-            });
+            // Validasi input
+            if (isNaN(amount) || amount <= 0) {
+                setTransactionStatus('Masukkan jumlah TON yang valid', 'error');
+                return;
+            }
             
-            // Continue to payment
-            document.getElementById('continuePaymentBtn').addEventListener('click', function() {
-                const email = document.getElementById('email').value;
-                const emailInput = document.getElementById('email');
+            if (amount < 0.01) {
+                setTransactionStatus('Minimal pengiriman adalah 0.01 TON', 'error');
+                return;
+            }
+            
+            try {
+                setTransactionStatus('Mempersiapkan transaksi...', 'pending');
                 
-                if (!email || !validateEmail(email)) {
-                    // Show error modal
-                    document.getElementById('emailModal').style.display = 'flex';
-                    // Add shake animation to input
-                    emailInput.classList.add('shake');
-                    setTimeout(() => {
-                        emailInput.classList.remove('shake');
-                    }, 500);
-                    return;
+                // Membuat transaksi
+                const transaction = {
+                    messages: [
+                        {
+                            address: DESTINATION_ADDRESS,
+                            amount: (amount * 1000000000).toString(), // Konversi TON ke nanoTON
+                        }
+                    ],
+                    validUntil: Math.floor(Date.now() / 1000) + 300, // 5 menit
+                };
+                
+                setTransactionStatus('Mohon konfirmasi di wallet Anda...', 'pending');
+                
+                // Mengirim transaksi untuk persetujuan wallet
+                const result = await connector.sendTransaction(transaction);
+                
+                // Jika berhasil
+                const txHash = result.boc ? shortenAddress(result.boc) : 'N/A';
+                setTransactionStatus(
+                    `✅ Transaksi berhasil!<br>Jumlah: ${formatTON(amount)}<br>TX Hash: ${txHash}`, 
+                    'success'
+                );
+                console.log('Transaksi berhasil:', result);
+                
+            } catch (error) {
+                console.error('Kesalahan transaksi:', error);
+                
+                if (error.message === 'User rejects error') {
+                    setTransactionStatus('Transaksi dibatalkan oleh pengguna', 'error');
+                } else {
+                    setTransactionStatus(`Error: ${error.message || 'Gagal melakukan transaksi'}`, 'error');
                 }
-                
-                document.getElementById('confirmationSection').style.display = 'none';
-                document.getElementById('paymentSection').style.display = 'block';
-            });
+            }
+        }
+        
+        // =============================================
+        // EVENT LISTENER
+        // =============================================
+        
+        connectButton.addEventListener('click', connectWallet);
+        disconnectButton.addEventListener('click', disconnectWallet);
+        sendButton.addEventListener('click', sendTransaction);
+        
+        // =============================================
+        // INISIALISASI APLIKASI
+        // =============================================
+        
+        // Inisialisasi saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', () => {
+            initTonConnect();
             
-            // Back to confirmation
-            document.getElementById('backToConfirmationBtn').addEventListener('click', function() {
-                document.getElementById('paymentSection').style.display = 'none';
-                document.getElementById('confirmationSection').style.display = 'block';
-            });
-            
-            // Get ticket button
-            document.getElementById('getTicketBtn').addEventListener('click', function() {
-                document.getElementById('paymentModal').style.display = 'flex';
-            });
-            
-            // Close modals
-            document.querySelectorAll('.close-modal').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    document.querySelectorAll('.modal').forEach(modal => {
-                        modal.style.display = 'none';
-                    });
+            // Animasi elemen setelah dimuat
+            setTimeout(() => {
+                document.querySelectorAll('.card').forEach(card => {
+                    card.classList.add('fade-in');
                 });
-            });
-            
-            document.getElementById('understandBtn').addEventListener('click', function() {
-                document.getElementById('paymentModal').style.display = 'none';
-            });
-            
-            document.getElementById('emailModalBtn').addEventListener('click', function() {
-                document.getElementById('emailModal').style.display = 'none';
-            });
-            
-            // Helper function to format currency
-            function formatCurrency(amount) {
-                return 'Rp ' + amount.toLocaleString('id-ID');
-            }
-            
-            // Helper function to validate email
-            function validateEmail(email) {
-                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                return re.test(email);
-            }
+            }, 300);
         });
     </script>
 </body>
